@@ -35,7 +35,7 @@ void setup(void)
   digitalWrite(14, LOW);
 
   // check if sensors are worn correctly
-  // sensorLocationCal();
+  sensorLocationCal();
 
 }
 
@@ -44,6 +44,8 @@ void loop(void)
   // continuously get knee flexion angle averaged across 50 samples
   // Serial.print("Knee flexion angle: ");
   Serial.print(getKneeAngle(10));
+  Serial.print("\t");
+  Serial.print(getForce());
 
   // get force applied from heel
   // Serial.print("\t");
@@ -61,15 +63,17 @@ void sensorLocationCal(void) {
 
   // continues to sample until user correctly places sensors over 1000 consecutive samples
   while (count < 100) {
-    float kneeAngle = getKneeAngle(100);
+    float kneeAngle = getKneeAngle(10);
     
     // just for debugging purposes
     Serial.print("Knee angle: ");
     Serial.print(kneeAngle);
     Serial.println("");
+    // Serial.print(getKneeAngle(10));
+    // Serial.print("\t");
 
-    // if absolute difference less than 5 degrees, add to count
-    if (abs(kneeAngle) <= 5) {
+    // if absolute difference less than 7 degrees, add to count
+    if (abs(kneeAngle) <= 7) {
       count += 1;
     }
     // restart     
@@ -106,7 +110,12 @@ float getKneeAngle(int numSamples) {
       sum += shinZ + abs(thighZ);
     }
     else if (thighZ > 0 && shinZ < 0) {
-      sum += (360-abs(shinZ)) - thighZ;
+      if (thighZ > 0 && thighZ < 90 && shinZ < 0 && shinZ > -90) {
+        sum += shinZ - thighZ;
+      }  
+      else {
+        sum += (360-abs(shinZ)) - thighZ;
+      }
     }
   }
 
@@ -129,15 +138,12 @@ float getKneeAngle(int numSamples) {
   return sum/numSamples;
 }
 
-void getForce(void) {
+int getForce(void) {
   int analogReading = analogRead(36);
+  int output = 0;
 
-  Serial.print("The force sensor value = ");
-  Serial.print(analogReading); // print the raw analog reading
-
-  if (analogReading < 3900)   
-    Serial.println(" -> no pressure");
-  else 
-    Serial.println(" -> big squeeze");
-
+  if (analogReading > 3900)   
+    output = 1;
+  
+  return output;
 }

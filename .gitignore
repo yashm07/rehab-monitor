@@ -1,1 +1,24 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
 .DS_Store
+
+# Ignore .csv files
+*.csv
+
+# Ignore .txt files
+*.txt
+
+# Other
+3P04.egg-info/
+*.cfg
+*.svd
+*.json
