@@ -1,3 +1,5 @@
+#include "BluetoothSerial.h"
+
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BNO055.h>
@@ -8,17 +10,20 @@ TwoWire i2cPort2 = TwoWire(1);
 Adafruit_BNO055 bno1 = Adafruit_BNO055(55);
 Adafruit_BNO055 bno2 = Adafruit_BNO055(55, 0x28, &i2cPort2);
 
+BluetoothSerial SerialBT;
+
 void setup(void) 
 {
+  SerialBT.begin("EsP32 Bluetooth - Team 11");
   Serial.begin(115200);
   i2cPort2.begin(32, 33, 100000);
-  Serial.println("Knee Angle Flexion Test"); Serial.println("");
+  SerialBT.println("Knee Angle Flexion Test"); Serial.println("");
   
   /* Initialise the sensor */
   if(!bno1.begin() || !bno2.begin())
   {
     /* There was a problem detecting the BNO055 ... check your connections */
-    Serial.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
+    SerialBT.print("Ooops, no BNO055 detected ... Check your wiring or I2C ADDR!");
     while(1);
   }
   
@@ -43,15 +48,15 @@ void loop(void)
 {
   // continuously get knee flexion angle averaged across 50 samples
   // Serial.print("Knee flexion angle: ");
-  Serial.print(getKneeAngle(10));
-  Serial.print("\t");
-  Serial.print(getForce());
+  SerialBT.print(getKneeAngle(10));
+  SerialBT.print("\t");
+  SerialBT.print(getForce());
 
   // get force applied from heel
   // Serial.print("\t");
   // getForce();
 
-  Serial.println("");
+  SerialBT.println("");
   delay(100);
 }
 
@@ -66,9 +71,9 @@ void sensorLocationCal(void) {
     float kneeAngle = getKneeAngle(10);
     
     // just for debugging purposes
-    Serial.print("Knee angle: ");
-    Serial.print(kneeAngle);
-    Serial.println("");
+    SerialBT.print("Knee angle: ");
+    SerialBT.print(kneeAngle);
+    SerialBT.println("");
     // Serial.print(getKneeAngle(10));
     // Serial.print("\t");
 
