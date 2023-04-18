@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='3P04',
+    name='rehab-monitor',
     version='1.0',
     packages=['src'],
     url='',
